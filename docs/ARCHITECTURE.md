@@ -23,6 +23,6 @@
   and the launcher rebuilds (`python -m mizan backtest --force`, ≈ 2 min on 4 cores).
 * **Boundaries:** ingestion (network, parsing) ∦ validation (pure) ∦ models (pure, train-only input) ∦ backtest (loop,
   no future access) ∦ metrics/intervals (pure) ∦ API (read-only) ∦ UI.
-* **Tests:** `pytest` (95), `vitest` (11), Playwright e2e (11), `ruff`, `tsc --strict`, `eslint`.
+* **Tests:** `pytest` (95), `vitest` (15), Playwright e2e (11), `ruff`, `tsc --strict`, `eslint`.
 * **Launcher:** `START_MIZAN.bat` → `launcher.py` (stdlib only): Python check → `.venv` → pinned `requirements.txt` →
   data validation → cache check → free port → health wait → browser. `STOP_MIZAN.bat` kills the recorded PID tree.

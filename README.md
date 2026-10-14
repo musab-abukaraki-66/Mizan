@@ -56,7 +56,7 @@ Reproduce everything: `python -m mizan ingest` (download + verify) · `python -m
 | ![Studio](docs/screenshots/studio-en.png) | ![Arena](docs/screenshots/arena-en.png) |
 
 ## Quality gates (all run in this repository)
-`pytest` 95 tests · `vitest` 11 · Playwright e2e 11 (Arabic/English, RTL chart mirroring, presentation mode + reset, keyboard,
+`pytest` 95 tests · `vitest` 15 · Playwright e2e 11 (Arabic/English, RTL chart mirroring, presentation mode + reset, keyboard,
 no horizontal overflow at 1440×900 and 390×844, zero console errors) · `ruff` · `tsc --strict` · `eslint` · production build.
 
 ## Docs
