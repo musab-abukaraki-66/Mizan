@@ -41,7 +41,13 @@ def run(*, download: bool = True, crosschecks: bool = True) -> dict[str, Any]:
             path = config.RAW_DIR / f"{year}.xlsx"
             if download or not path.exists():
                 _log(f"downloading {year} ...")
-                rec = dos_cpi.download_year(year, path, client=client)
+                try:
+                    rec = dos_cpi.download_year(year, path, client=client)
+                except RuntimeError as exc:
+                    if year == last_year and year > config.FIRST_YEAR:  # new year's workbook not published yet
+                        _log(f"{year}: not available yet ({exc}) - continuing with earlier years")
+                        continue
+                    raise
             else:
                 rec = dos_cpi.describe_file(year, path)
             parse = dos_cpi.parse_workbook(path, year)

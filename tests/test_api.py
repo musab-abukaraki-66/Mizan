@@ -4,8 +4,13 @@ from fastapi.testclient import TestClient
 from mizan import config
 from mizan.api import state as S
 from mizan.api.main import app
+from mizan.series.loader import load_cpi
 
 client = TestClient(app)
+_CPI = load_cpi()
+N = len(_CPI)
+LAST = _CPI.index[-1].strftime("%Y-%m")
+NEXT = (_CPI.index[-1] + __import__("pandas").offsets.MonthBegin(1)).strftime("%Y-%m")
 
 
 @pytest.fixture(autouse=True)
@@ -23,11 +28,11 @@ def test_health():
 def test_series_rows_and_derived_fields():
     d = client.get("/api/series").json()
     rows = d["rows"]
-    assert len(rows) == 249 and rows[0]["mom"] is None and rows[11]["yoy"] is None and rows[12]["yoy"] is not None
+    assert len(rows) == N and rows[0]["mom"] is None and rows[11]["yoy"] is None and rows[12]["yoy"] is not None
     last, prev = rows[-1], rows[-2]
     assert last["mom"] == pytest.approx(100 * (last["cpi"] / prev["cpi"] - 1))
     assert last["yoy"] == pytest.approx(100 * (last["cpi"] / rows[-13]["cpi"] - 1))
-    assert d["latest"]["period"] == last["period"] == "2026-09"
+    assert d["latest"]["period"] == last["period"] == LAST
 
 
 def test_overview_has_forecast_for_each_horizon_with_ordered_bands():
@@ -42,7 +47,7 @@ def test_overview_has_forecast_for_each_horizon_with_ordered_bands():
 def test_forecast_endpoint_shape(h):
     d = client.get(f"/api/forecast?horizon={h}").json()
     assert len(d["periods"]) == len(d["mean"]) == len(d["yoy"]) == h
-    assert d["periods"][0] == "2026-10"
+    assert d["periods"][0] == NEXT
     for tag in ("80", "95"):
         b = d["bands"][tag]
         assert all(lo <= m <= hi for lo, m, hi in zip(b["lower"], d["mean"], b["upper"]))
@@ -74,12 +79,12 @@ def test_backtest_and_arena():
     assert n == b["metrics"]["all"]["n"] and len(b["series"]["actual"]) == n
     a = client.get("/api/arena").json()
     assert [m["id"] for m in a["models"]] == ["naive", "seasonal_naive", "drift", "ets", "sarima"]
-    assert a["design"]["test_window"][1] == "2026-09"
+    assert a["design"]["test_window"][1] == LAST
 
 
 def test_quality_endpoint_exposes_provenance():
     q = client.get("/api/quality").json()
-    assert q["live_validation"]["summary"]["ok"] and q["series"]["rows"] == 249
+    assert q["live_validation"]["summary"]["ok"] and q["series"]["rows"] == N
     assert len(q["series"]["csv_sha256"]) == 64 and q["retrieval"]["files"]
     assert q["crosschecks"]["press_release"]["ok"] is True
 

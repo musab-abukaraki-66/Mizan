@@ -75,19 +75,25 @@ def imf_crosscheck(cpi: pd.Series, client: httpx.Client | None = None) -> dict[s
     }
 
 
+PRESS_REFERENCE = pd.Timestamp("2026-09-01")  # the release the statements above come from (fixed, not "latest")
+
+
 def press_crosscheck(cpi: pd.Series) -> dict[str, Any]:
-    """Recompute the headline statistics in the DoS release from the series and compare."""
-    last = cpi.index.max()
+    """Recompute the headline statistics of the 2026-09 DoS release from the series and compare.
+
+    The reference month is fixed, so the check keeps working after newer months are appended.
+    """
+    ref = PRESS_REFERENCE
     computed = {
-        "yoy_2026_09": float(yoy_change(cpi).loc[last]),
-        "mom_2026_09": float(mom_change(cpi).loc[last]),
-        "avg_2026_jan_sep": average_inflation(cpi, last.year, last.month),
+        "yoy_2026_09": float(yoy_change(cpi).loc[ref]),
+        "mom_2026_09": float(mom_change(cpi).loc[ref]),
+        "avg_2026_jan_sep": average_inflation(cpi, ref.year, ref.month),
     }
     results = []
     for s in PRESS_STATEMENTS:
         val = computed[s["id"]]
         results.append({**s, "computed": round(val, 4), "ok": bool(abs(round(val, 2) - s["stated"]) < 1e-9)})
-    return {"source": PRESS_SOURCE, "reference_month": last.strftime("%Y-%m"),
+    return {"source": PRESS_SOURCE, "reference_month": ref.strftime("%Y-%m"),
             "results": results, "ok": all(r["ok"] for r in results)}
 
 

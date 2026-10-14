@@ -1,0 +1,72 @@
+name: Update data and site
+
+# Checks the Department of Statistics weekly. If a new monthly CPI value was published it re-ingests and
+# validates the data, re-runs the backtests, rebuilds the static site (site/) and commits the result.
+# The hosting platform redeploys automatically from the new commit.
+on:
+  schedule:
+    - cron: "17 6 * * 1"     # every Monday 06:17 UTC (DoS publishes around the 10th-14th of each month)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-site
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip, cache-dependency-path: requirements-dev.txt }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: pip install -r requirements-dev.txt
+
+      - name: Re-ingest from the Department of Statistics
+        run: python -m mizan ingest
+
+      - name: Did the series change?
+        id: changed
+        run: |
+          if git diff --quiet -- data/processed/jordan_cpi_monthly.csv; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            git checkout -- data/processed/provenance.json   # only the retrieval timestamp differs
+            echo "No new CPI data."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- data/processed/jordan_cpi_monthly.csv
+          fi
+
+      - name: Validate, backtest, test
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          python -m mizan validate
+          python -m mizan backtest --force
+          python -m pytest
+
+      - name: Build the web app and static site
+        if: steps.changed.outputs.changed == 'true'
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+          npm run build:static
+
+      - name: Export static API
+        if: steps.changed.outputs.changed == 'true'
+        run: python -m mizan export-static --out site
+
+      - name: Commit and push
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          latest=$(tail -n 1 data/processed/jordan_cpi_monthly.csv | cut -d, -f1)
+          git config user.name "mizan-bot"
+          git config user.email "mizan-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "Data update: CPI through ${latest}"
+          git push

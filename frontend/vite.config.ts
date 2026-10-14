@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 // so the demo laptop needs only Python at runtime - no Node.
 export default defineConfig({
   plugins: [react()],
-  build: { outDir: "../mizan/web", emptyOutDir: true, sourcemap: false, target: "es2022", chunkSizeWarningLimit: 700 },
+  build: { outDir: process.env.VITE_STATIC === "1" ? "../site" : "../mizan/web", emptyOutDir: true, sourcemap: false, target: "es2022", chunkSizeWarningLimit: 700 },
   server: { port: 5173, proxy: { "/api": "http://127.0.0.1:8765" } },
   test: { environment: "jsdom", globals: true, setupFiles: ["tests/setup.ts"], include: ["tests/**/*.test.{ts,tsx}"] },
 });

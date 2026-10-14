@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:static": "tsc --noEmit && VITE_STATIC=1 vite build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests e2e --max-warnings 0",
     "test": "vitest run",

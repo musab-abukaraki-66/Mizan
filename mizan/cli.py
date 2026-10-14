@@ -51,6 +51,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("validate", help="validate the bundled series")
     bt = sub.add_parser("backtest", help="(re)build cached backtest results")
     bt.add_argument("--force", action="store_true")
+    ex = sub.add_parser("export-static", help="write the API as static JSON for static hosting")
+    ex.add_argument("--out", default="site")
     sv = sub.add_parser("serve", help="start the web app")
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8765)
@@ -64,6 +66,13 @@ def main(argv: list[str] | None = None) -> int:
         return _validate()
     if args.cmd == "backtest":
         return _backtest(args.force)
+    if args.cmd == "export-static":
+        from pathlib import Path
+
+        from mizan.export_static import export
+
+        print(f"exported {export(Path(args.out))} files to {args.out}/api")
+        return 0
     return _serve(args.host, args.port)
 
 
