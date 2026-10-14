@@ -61,7 +61,7 @@ no horizontal overflow at 1440×900 and 390×844, zero console errors) · `ruff`
 
 ## Docs
 [Product brief](docs/PRODUCT_BRIEF.md) · [Data sources & licence](docs/DATA_SOURCES.md) · [Methodology](docs/METHODOLOGY.md) ·
-[Architecture](docs/ARCHITECTURE.md) · [شرح المقابلة (عربي)](docs/INTERVIEW_WALKTHROUGH_AR.md) · [Known limitations](docs/KNOWN_LIMITATIONS.md)
+[Architecture](docs/ARCHITECTURE.md) · [شرح المقابلة (عربي)](docs/INTERVIEW_WALKTHROUGH_AR.md) · [الشرح الكامل للمشروع (عربي)](docs/MIZAN_EXPLAINER_AR.md) · [Known limitations](docs/KNOWN_LIMITATIONS.md)
 
 ## Attribution & licence
 Source data: **Jordan Department of Statistics**, *Monthly Consumer Price Index (2018 = 100)*, <https://dosweb.dos.gov.jo/economic/price-indices/table-price-indices/>.
