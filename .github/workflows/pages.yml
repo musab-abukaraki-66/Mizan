@@ -2,8 +2,7 @@ name: Deploy site (GitHub Pages)
 
 on:
   push:
-    branches: [main]
-    paths: ["site/**"]
+    paths: ["site/**"]       # runs on the default branch (the environment only allows the default branch)
   workflow_dispatch: {}
   workflow_call: {}          # called by update.yml after a data refresh
 
@@ -24,7 +23,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-        with: { ref: main }
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }

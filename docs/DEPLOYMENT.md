@@ -4,7 +4,7 @@ MIZAN's web app only reads precomputed results, so the public site is **static**
 
 * **Live URL** (after the one-time setup below): <https://musab-abukaraki-66.github.io/Mizan/>
 * **Build locally:** `cd frontend && npm run build:static && cd .. && python -m mizan export-static --out site`
-* **Deploy:** `.github/workflows/pages.yml` publishes `site/` to GitHub Pages (on every push to `main` that changes `site/`, or manually).
+* **Deploy:** `.github/workflows/pages.yml` publishes `site/` to GitHub Pages (on every push to the default branch that changes `site/`, or manually).
 * **Keeps itself up to date:** `.github/workflows/update.yml` runs every Monday (and on demand). It re-downloads the Department of
   Statistics workbooks and, **only if the CPI series changed**, validates the data, re-runs the backtests, runs the tests,
   rebuilds `site/`, commits "Data update: CPI through YYYY-MM" and redeploys. If the Department changes its file layout the
@@ -12,7 +12,7 @@ MIZAN's web app only reads precomputed results, so the public site is **static**
 
 ## One-time setup (≈ 2 minutes)
 1. Repository **Settings → General → Danger Zone → Change visibility → Public** (GitHub Pages is free for public repos).
-2. Merge the working branch into `main` (the scheduled job and Pages deploys run from the default branch).
+2. Nothing to merge: the repository's default branch is already the working branch, and scheduled jobs / Pages deploys run from the default branch.
 3. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 4. **Actions → Deploy site (GitHub Pages) → Run workflow.** The URL appears in the run summary.
 
