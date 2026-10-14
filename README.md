@@ -28,6 +28,9 @@ guided 2-minute walkthrough.
   window (1-month: SARIMA −3.5 % RMSE, DM *p* = 0.50; 3/6-month: naive is best). On the recent test window SARIMA/drift did better, also not significantly. MIZAN shows this instead of hiding it.
 * **Known caveats:** a 2018 basket link in the series; 12 months of 2018 differ from the IMF copy (documented, cause unknown). See [Known limitations](docs/KNOWN_LIMITATIONS.md).
 
+## Live site
+Public static site (auto-updated weekly from the Department of Statistics): <https://musab-abukaraki-66.github.io/Mizan/> — setup and update flow in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Run it
 **Windows (recommended):** double-click **`START_MIZAN.bat`** → opens <http://127.0.0.1:8765/> (details: [SETUP_WINDOWS.md](SETUP_WINDOWS.md), checklist: [RUNNING_THE_DEMO.md](RUNNING_THE_DEMO.md)).
 

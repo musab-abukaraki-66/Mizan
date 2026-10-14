@@ -19,6 +19,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    outputs:
+      changed: ${{ steps.changed.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,3 +72,12 @@ jobs:
           git add -A
           git commit -m "Data update: CPI through ${latest}"
           git push
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

@@ -18,9 +18,9 @@ export function resolveApiPath(path: string, isStatic: boolean = import.meta.env
   const u = new URL(path, "http://local");
   const q = u.searchParams;
   if (u.pathname === "/api/forecast")
-    return `/api/forecast/${q.get("horizon") ?? "3"}/${q.get("model") ?? "champion"}/${q.get("interval") ?? "calibrated"}.json`;
-  if (u.pathname === "/api/backtest") return `/api/backtest/${q.get("model")}/${q.get("horizon") ?? "1"}.json`;
-  return `${u.pathname}.json`;
+    return `api/forecast/${q.get("horizon") ?? "3"}/${q.get("model") ?? "champion"}/${q.get("interval") ?? "calibrated"}.json`;
+  if (u.pathname === "/api/backtest") return `api/backtest/${q.get("model")}/${q.get("horizon") ?? "1"}.json`;
+  return `${u.pathname.replace(/^\//, "")}.json`; // relative: works from any sub-path
 }
 
 async function request<T>(path: string): Promise<T> {
