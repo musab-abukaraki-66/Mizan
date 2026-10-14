@@ -203,6 +203,7 @@ export const en = {
   "ar.fitFailures": "Fit failures (origins skipped)",
   "ar.specs": "Specifications selected (1-month horizon, share of origins)",
   "ar.sampleRule": "Comparison sample",
+  "ar.sampleRuleText": "only (origin, horizon) pairs where every model produced a forecast ({a} of {b})",
 
   "dq.eyebrow": "Data & Quality",
   "dq.title": "Where the data comes from, and how it was checked",

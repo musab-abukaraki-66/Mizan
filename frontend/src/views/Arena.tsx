@@ -65,7 +65,7 @@ export function Arena() {
               </div>
             </div>
             <p className="small muted dev-only">
-              {t("ar.sampleRule")}: {data.comparison_sample.rule} ({num(data.comparison_sample.rows_after, lang, 0)}/{num(data.comparison_sample.rows_before, lang, 0)})
+              {t("ar.sampleRule")}: {t("ar.sampleRuleText", { a: num(data.comparison_sample.rows_after, lang, 0), b: num(data.comparison_sample.rows_before, lang, 0) })}
             </p>
           </section>
 
